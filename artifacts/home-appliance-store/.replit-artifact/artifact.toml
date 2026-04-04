@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Home Appliance Store"
+version = "1.0.0"
+id = "artifacts/home-appliance-store"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18119
+
+[services.development]
+run = "pnpm --filter @workspace/home-appliance-store run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/home-appliance-store", "run", "build" ]
+publicDir = "artifacts/home-appliance-store/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18119"
+BASE_PATH = "/"
