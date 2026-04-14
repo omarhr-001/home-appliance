@@ -103,11 +103,14 @@ function Router() {
 }
 
 function App() {
+  const base = import.meta.env.BASE_URL || "/";
+  const normalizedBase = base === "/" ? "/" : base.replace(/\/$/, "");
+  
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <WouterRouter base={normalizedBase}>
             <Router />
           </WouterRouter>
           <Toaster />
