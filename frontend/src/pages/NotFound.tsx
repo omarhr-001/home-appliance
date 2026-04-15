@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'wouter'
 
 export default function NotFound() {
   return (
@@ -7,7 +7,7 @@ export default function NotFound() {
         <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
         <p className="text-2xl text-gray-600 mb-8">Page not found</p>
         <Link
-          to="/"
+          href="/"
           className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition"
         >
           Go Home

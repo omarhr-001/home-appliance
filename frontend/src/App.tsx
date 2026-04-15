@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Router, Route } from 'wouter'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import NotFound from './pages/NotFound'
@@ -8,11 +8,9 @@ function App() {
   return (
     <Router>
       <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Route path="/" component={Home} />
+        <Route path="/products" component={Products} />
+        <Route component={NotFound} />
       </Layout>
     </Router>
   )

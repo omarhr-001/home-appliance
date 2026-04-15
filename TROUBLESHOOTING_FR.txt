@@ -1,0 +1,216 @@
+================================================================================
+                        DÉPANNAGE RAPIDE - PROBLÈMES COURANTS
+================================================================================
+
+PROBLÈME: "pnpm dev" ne démarre pas
+====================================
+
+Solution 1: Installer les dépendances
+  pnpm install
+
+Solution 2: Supprimer node_modules et réinstaller
+  rm -rf node_modules pnpm-lock.yaml
+  pnpm install
+
+Solution 3: Vérifier Node.js version
+  node --version  # Devrait être 18+
+
+
+PROBLÈME: Port déjà utilisé
+===========================
+
+Solution 1: Trouver le processus
+  # Sur macOS/Linux:
+  lsof -i :5173  # Frontend
+  lsof -i :3001  # Backend
+
+Solution 2: Tuer le processus
+  kill -9 <PID>
+
+Solution 3: Utiliser d'autres ports
+  # Dans vite.config.ts:
+  port: 5174  # ou autre port libre
+
+
+PROBLÈME: "Cannot find module 'wouter'"
+========================================
+
+Solution: Installer les dépendances
+  pnpm install
+
+Ou pour frontend seulement:
+  cd frontend
+  pnpm install
+
+
+PROBLÈME: Erreur TypeScript "element is not defined"
+=====================================================
+
+Solution 1: Vérifier l'import
+  ✅ Correct: import { Route } from 'wouter'
+  ❌ Faux:   import { Route } from 'react-router-dom'
+
+Solution 2: Utiliser component= au lieu de element=
+  ✅ Correct: <Route path="/" component={Home} />
+  ❌ Faux:   <Route path="/" element={<Home />} />
+
+
+PROBLÈME: Page affiche 404
+==========================
+
+Vérification 1: Frontend démarre?
+  http://localhost:5173
+  Devrait montrer: Home Appliance Store
+
+Vérification 2: Backend démarre?
+  http://localhost:3001/api/health
+  Devrait retourner: { "status": "ok" }
+
+Vérification 3: Vérifier les logs du terminal
+  - Y a-t-il des erreurs?
+  - Les deux serveurs démarre?
+
+
+PROBLÈME: API retourne 404
+==========================
+
+Vérification: Backend configure correctement?
+  ✅ Doit avoir: app.get('/api/health', ...)
+  ✅ Doit avoir: app.get('/api/products', ...)
+
+Vérification: Proxy Vite correct?
+  ✅ Doit avoir: proxy: { '/api': { target: 'http://localhost:3001' } }
+
+
+PROBLÈME: Erreur "CORS"
+=======================
+
+Vérification: Backend a CORS?
+  ✅ Doit avoir: app.use(cors({ origin: '...' }))
+
+Solution: Redémarrer le backend
+  Ctrl+C puis relancer: cd backend && pnpm dev
+
+
+PROBLÈME: "not found at path /images/..."
+===========================================
+
+Normal! Les pages n'ont pas d'images. C'est juste un warning.
+Le site fonctionne normalement.
+
+
+PROBLÈME: Rien n'apparaît à l'écran
+===================================
+
+Vérification 1: Ouvrir la console du navigateur
+  F12 ou Ctrl+Shift+I
+
+Vérification 2: Vérifier les erreurs
+  - Erreur rouge? Quelle est l'erreur?
+  - 404? Pour quelle ressource?
+
+Vérification 3: Vérifier les logs du terminal
+  - Le serveur démarre?
+  - Des erreurs? Lesquelles?
+
+
+PROBLÈME: "Cannot GET /"
+=========================
+
+Cela veut dire: Le frontend ne démarre pas correctement
+
+Solution 1: Vérifier les erreurs
+  Regarder dans la console du terminal
+
+Solution 2: Vérifier index.html
+  ✅ Doit exister: frontend/index.html
+  ✅ Doit avoir: <div id="root"></div>
+  ✅ Doit avoir: <script src="/src/main.tsx"></script>
+
+Solution 3: Vérifier main.tsx
+  ✅ Doit exister: frontend/src/main.tsx
+  ✅ Doit importer: import App from './App'
+  ✅ Doit render: ReactDOM.createRoot(...).render(<App />)
+
+
+PROBLÈME: Tous les imports sont rouges en VS Code
+==================================================
+
+Solution 1: Redémarrer VS Code
+  Ctrl+Shift+P > Reload Window
+
+Solution 2: Vérifier tsconfig.json
+  ✅ Doit exister: frontend/tsconfig.json
+  ✅ Doit avoir les bons paths
+
+Solution 3: Vérifier les dépendances
+  npm audit  # Voir les problèmes
+  pnpm install  # Réinstaller
+
+
+PROBLÈME: Les routes ne fonctionnent pas
+=========================================
+
+Vérification: Wouter est bien utilisé?
+  ✅ Doit avoir: import { Router, Route } from 'wouter'
+  ❌ Ne pas avoir: import { BrowserRouter } from 'react-router-dom'
+
+Vérification: Syntaxe wouter?
+  ✅ Doit avoir: <Link href="/" />
+  ❌ Ne pas avoir: <Link to="/" />
+
+Redémarrer:
+  Ctrl+C et relancer: pnpm dev
+
+
+PROBLÈME: "pnpm: command not found"
+===================================
+
+Solution 1: Installer pnpm
+  npm install -g pnpm
+
+Solution 2: Vérifier la version
+  pnpm --version  # Doit être 8+
+
+Solution 3: Utiliser npm à la place (moins optimal)
+  npm install
+  npm run dev
+
+
+RÉSUMÉ DES ÉTAPES DE DÉPANNAGE
+==============================
+
+1. Lire le message d'erreur attentivement
+2. Chercher l'erreur dans ce fichier
+3. Appliquer la solution proposée
+4. Redémarrer: Ctrl+C puis relancer
+
+Si ça marche pas:
+  1. Vérifier le terminal pour les erreurs
+  2. Vérifier la console du navigateur (F12)
+  3. Lire les fichiers de documentation
+  4. Essayer les solutions proposées une par une
+
+
+CONTACTS RAPIDES
+================
+
+Code: voir CHANGEMENTS_TECHNIQUES.md
+Historique: voir STATUS.txt
+Guide: voir 00_START_HERE.md
+
+
+COMMANDE MAGIQUE
+================
+
+Si tout échoue, essayez ceci:
+
+  pnpm clean         # Si dispo
+  rm -rf node_modules pnpm-lock.yaml
+  pnpm install
+  pnpm dev
+
+
+================================================================================
+                        BONNE CHANCE! 🚀
+================================================================================
