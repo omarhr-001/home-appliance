@@ -1,0 +1,57 @@
+════════════════════════════════════════════════════════════
+                   SETUP SIMPLE (5 MINUTES)
+════════════════════════════════════════════════════════════
+
+ETAPE 1: Ouvrir Terminal
+────────────────────────
+cd /chemin/vers/home-appliance
+
+
+ETAPE 2: Installer Dependances
+───────────────────────────────
+pnpm install
+
+Attend 2-3 minutes...
+
+
+ETAPE 3: Demarrer le Projet
+────────────────────────────
+pnpm dev
+
+Les deux services vont demarrer
+
+
+ETAPE 4: Acceder a l'Application
+─────────────────────────────────
+Ouvrir navigateur:
+  http://localhost:5173
+
+C'est tout! L'app fonctionne!
+
+
+ARRETER?
+────────
+CTRL+C dans le terminal
+
+
+ERREUR?
+───────
+Port utilise?
+→ Attendre ou changer PORT dans backend/.env
+
+Probleme dependances?
+→ rm -rf node_modules && pnpm install
+
+Toujours pas?
+→ Consulter README_NEW.md
+
+
+TRUCS UTILES
+────────────
+- Fichiers se recharges automatiquement
+- Test backend: http://localhost:3001/api/health
+- Erreurs: ouvrir Console (F12) dans le navigateur
+
+
+BON DEVELOPPEMENT!
+══════════════════════════════════════════════════════════════

@@ -1,0 +1,53 @@
+╔════════════════════════════════════════════════════════════╗
+║     HOME APPLIANCE STORE - DÉMARRAGE RAPIDE                ║
+╚════════════════════════════════════════════════════════════╝
+
+1. INSTALLATION INITIALE
+   ─────────────────────
+   pnpm install
+
+2. DÉMARRER EN DÉVELOPPEMENT
+   ────────────────────────
+   pnpm dev
+   
+   Ou:
+   bash start-dev.sh
+
+3. ACCÈS À L'APPLICATION
+   ─────────────────────
+   Frontend:    http://localhost:5173
+   Backend:     http://localhost:3001
+   Health:      http://localhost:3001/api/health
+
+4. STRUCTURE
+   ─────────
+   frontend/     - Application React avec Tailwind CSS
+   backend/      - Serveur Express.js
+
+5. COMMANDES DISPONIBLES
+   ──────────────────────
+   pnpm dev       - Démarre les deux services
+   pnpm build     - Construit les deux applications
+   pnpm typecheck - Vérifie les types TypeScript
+
+6. VARIABLES D'ENVIRONNEMENT
+   ──────────────────────────
+   Frontend (.env):
+   - VITE_API_URL=http://localhost:3001
+   
+   Backend (.env):
+   - NODE_ENV=development
+   - PORT=3001
+   - FRONTEND_URL=http://localhost:5173
+
+7. DÉPANNAGE
+   ─────────
+   Erreur de port en utilisation?
+   Modifiez PORT dans backend/.env
+
+   Problème CORS?
+   Vérifiez FRONTEND_URL dans backend/.env
+
+═══════════════════════════════════════════════════════════════
+
+Pour plus d'infos, voir README_NEW.md

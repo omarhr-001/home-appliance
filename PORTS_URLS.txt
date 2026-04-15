@@ -1,0 +1,167 @@
+╔════════════════════════════════════════════════════════════════════╗
+║           PORTS ET URLs - HOME APPLIANCE STORE
+╚════════════════════════════════════════════════════════════════════╝
+
+┌────────────────────────────────────────────────────────────────────┐
+│                       DÉVELOPPEMENT (pnpm dev)
+└────────────────────────────────────────────────────────────────────┘
+
+FRONTEND (React):
+├─ URL:        http://localhost:5173
+├─ Port:       5173
+├─ Technos:    React 19, Vite, Tailwind CSS
+├─ Hot reload: ✅ Oui (automatique)
+└─ Accessible: Immédiatement après pnpm dev
+
+BACKEND (Express):
+├─ URL:        http://localhost:3001
+├─ Port:       3001
+├─ Technos:    Node.js, Express.js
+├─ Restart:    Manuel (éditez et relancez)
+└─ Accessible: Immédiatement après pnpm dev
+
+┌────────────────────────────────────────────────────────────────────┐
+│                         API ENDPOINTS
+└────────────────────────────────────────────────────────────────────┘
+
+HEALTH CHECK:
+  GET http://localhost:3001/api/health
+  
+  Réponse:
+  {
+    "status": "ok",
+    "message": "Server is running"
+  }
+
+PRODUCTS LIST:
+  GET http://localhost:3001/api/products
+  
+  Réponse:
+  [
+    {
+      "id": 1,
+      "name": "Washing Machine",
+      "price": 399.99,
+      "description": "..."
+    },
+    ...
+  ]
+
+PROXY (Frontend):
+  /api/* → http://localhost:3001
+  
+  Le frontend proxifie automatiquement les appels /api vers le backend
+
+┌────────────────────────────────────────────────────────────────────┐
+│                      VARIABLES D'ENVIRONNEMENT
+└────────────────────────────────────────────────────────────────────┘
+
+FRONTEND (frontend/.env):
+  VITE_API_URL=http://localhost:3001
+
+BACKEND (backend/.env):
+  NODE_ENV=development
+  PORT=3001
+  FRONTEND_URL=http://localhost:5173
+
+┌────────────────────────────────────────────────────────────────────┐
+│                    CHANGER LES PORTS (OPTIONNEL)
+└────────────────────────────────────────────────────────────────────┘
+
+Si un port est déjà en utilisation:
+
+CHANGER LE PORT FRONTEND:
+  1. Éditer frontend/vite.config.ts
+  2. Changer: port: 5173 → port: 5174
+  3. Relancer pnpm dev
+
+CHANGER LE PORT BACKEND:
+  1. Éditer backend/.env
+  2. Changer: PORT=3001 → PORT=3002
+  3. Relancer pnpm dev
+
+CHANGER L'URL API (Frontend):
+  1. Éditer frontend/.env
+  2. Changer: VITE_API_URL=http://localhost:3001
+  3. Relancer pnpm dev
+
+┌────────────────────────────────────────────────────────────────────┐
+│                    VÉRIFIER QUE TOUT FONCTIONNE
+└────────────────────────────────────────────────────────────────────┘
+
+1. Vérifier le Backend:
+   curl http://localhost:3001/api/health
+   
+   Doit retourner:
+   {"status":"ok","message":"Server is running"}
+
+2. Vérifier le Frontend:
+   Ouvrir http://localhost:5173 dans le navigateur
+   
+   Doit afficher la page d'accueil
+
+3. Vérifier la Connexion:
+   Aller à /products
+   
+   Doit afficher la liste des produits (appel API)
+
+┌────────────────────────────────────────────────────────────────────┐
+│                      LOGS & DEBUGGING
+└────────────────────────────────────────────────────────────────────┘
+
+FRONTEND LOGS:
+  Ouvrir Developer Tools (F12)
+  → Onglet Console
+
+BACKEND LOGS:
+  Terminal où vous lancez pnpm dev
+  Affiche les requêtes et erreurs
+
+VÉRIFIER LE PROXY:
+  DevTools → Onglet Network
+  Voir si les appels /api sont faits vers le backend
+
+┌────────────────────────────────────────────────────────────────────┐
+│                    ARRÊTER LES SERVICES
+└────────────────────────────────────────────────────────────────────┘
+
+Pour arrêter les services:
+  Appuyer sur CTRL+C dans le terminal
+
+Pour relancer:
+  Retaper: pnpm dev
+
+┌────────────────────────────────────────────────────────────────────┐
+│                   DÉPLOIEMENT (PRODUCTION)
+└────────────────────────────────────────────────────────────────────┘
+
+FRONTEND (Vercel):
+  URLs de production: https://votresite.vercel.app
+
+BACKEND (Render/Railway):
+  URLs de production: https://votre-api.onrender.com
+  
+  Ou: https://votre-api.railway.app
+
+METTRE À JOUR LES URLs:
+  1. Modifier VITE_API_URL en production
+  2. Pointer vers l'URL du backend en production
+
+┌────────────────────────────────────────────────────────────────────┐
+│                      QUICK REFERENCE
+└────────────────────────────────────────────────────────────────────┘
+
+Commande               | Effet
+─────────────────────────────────────────────────────────
+pnpm dev              | Démarre les deux services
+pnpm build            | Build production
+cd frontend && pnpm dev    | Frontend seul
+cd backend && pnpm dev     | Backend seul
+curl localhost:3001/api/health | Test du serveur
+
+═══════════════════════════════════════════════════════════════════════
+
+Status: ✅ Tous les ports sont configurés et prêts
+Last updated: 2024
+
+═══════════════════════════════════════════════════════════════════════
