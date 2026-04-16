@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link, useLocation } from "wouter";
-import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,9 +18,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Package } from "lucide-react";
 
 const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("Veuillez entrer une adresse email valide"),
+  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas",
+  path: ["confirmPassword"],
 });
 
 export default function Register() {
@@ -32,42 +34,23 @@ export default function Register() {
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
     setIsLoading(true);
-    
-    // Sign up with Supabase
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-      options: {
-        data: {
-          name: values.name,
-        }
-      }
-    });
-
-    setIsLoading(false);
-
-    if (authError) {
+    // Mock registration - just show success message
+    setTimeout(() => {
+      setIsLoading(false);
       toast({
-        variant: "destructive",
-        title: "Registration failed",
-        description: authError.message,
+        title: "Compte créé!",
+        description: "Votre compte a été créé avec succès.",
       });
-      return;
-    }
-
-    toast({
-      title: "Account created!",
-      description: "Welcome to Lumina Home Appliances.",
-    });
-    setLocation("/");
+      setLocation("/login");
+    }, 500);
   }
 
   return (
@@ -77,27 +60,14 @@ export default function Register() {
           <div className="mx-auto bg-primary text-primary-foreground w-12 h-12 rounded-lg flex items-center justify-center mb-4">
             <Package className="h-6 w-6" />
           </div>
-          <CardTitle className="text-2xl">Create an account</CardTitle>
+          <CardTitle className="text-2xl">Créer un compte</CardTitle>
           <CardDescription>
-            Enter your details below to create your account
+            Entrez vos informations pour vous inscrire
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
@@ -116,7 +86,20 @@ export default function Register() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mot de passe</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="••••••••" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirmer le mot de passe</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
@@ -125,14 +108,14 @@ export default function Register() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating account..." : "Sign up"}
+                {isLoading ? "Création..." : "Créer un compte"}
               </Button>
             </form>
           </Form>
           <div className="mt-6 text-center text-sm">
-            <span className="text-muted-foreground">Already have an account? </span>
+            <span className="text-muted-foreground">Vous avez déjà un compte? </span>
             <Link href="/login" className="text-primary font-medium hover:underline">
-              Sign in
+              Se connecter
             </Link>
           </div>
         </CardContent>
