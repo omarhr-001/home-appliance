@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link, useLocation } from "wouter";
-import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,8 +18,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Package } from "lucide-react";
 
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("Veuillez entrer une adresse email valide"),
+  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
 });
 
 export default function Login() {
@@ -38,27 +37,15 @@ export default function Login() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     setIsLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
-
-    setIsLoading(false);
-
-    if (error) {
+    // Mock login - just show success message
+    setTimeout(() => {
+      setIsLoading(false);
       toast({
-        variant: "destructive",
-        title: "Login failed",
-        description: error.message,
+        title: "Bienvenue!",
+        description: "Vous êtes maintenant connecté.",
       });
-      return;
-    }
-
-    toast({
-      title: "Welcome back!",
-      description: "You have successfully logged in.",
-    });
-    setLocation("/");
+      setLocation("/");
+    }, 500);
   }
 
   return (
@@ -68,9 +55,9 @@ export default function Login() {
           <div className="mx-auto bg-primary text-primary-foreground w-12 h-12 rounded-lg flex items-center justify-center mb-4">
             <Package className="h-6 w-6" />
           </div>
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
+          <CardTitle className="text-2xl">Bienvenue</CardTitle>
           <CardDescription>
-            Enter your email to sign in to your account
+            Entrez votre email pour vous connecter à votre compte
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -94,7 +81,7 @@ export default function Login() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mot de passe</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
@@ -103,14 +90,14 @@ export default function Login() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? "Connexion..." : "Se connecter"}
               </Button>
             </form>
           </Form>
           <div className="mt-6 text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
+            <span className="text-muted-foreground">Vous n&apos;avez pas de compte? </span>
             <Link href="/register" className="text-primary font-medium hover:underline">
-              Sign up
+              Créer un compte
             </Link>
           </div>
         </CardContent>

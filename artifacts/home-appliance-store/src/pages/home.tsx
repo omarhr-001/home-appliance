@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { useListProducts, useListCategories, getListProductsQueryKey } from "@workspace/api-client-react";
 import { Link } from "wouter";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Search, PackageX, ArrowRight, Star, Zap, Shield, Truck } from "lucide-react";
+import { Search, ArrowRight, Star, Zap, Shield, Truck } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,26 +20,74 @@ const categoryIcons: Record<string, string> = {
   "Dishwashers": "💧",
 };
 
+// Mock products
+const mockProducts = [
+  {
+    id: "1",
+    name: "Samsung Refrigerator",
+    description: "Modern refrigerator with smart features",
+    price: 85000,
+    category: "Refrigerators",
+    imageUrl: "",
+    stock: 10,
+  },
+  {
+    id: "2",
+    name: "LG Washing Machine",
+    description: "High-capacity washing machine",
+    price: 65000,
+    category: "Washing Machines",
+    imageUrl: "",
+    stock: 5,
+  },
+  {
+    id: "3",
+    name: "Daikin Air Conditioner",
+    description: "Energy-efficient air conditioner",
+    price: 95000,
+    category: "Air Conditioners",
+    imageUrl: "",
+    stock: 12,
+  },
+  {
+    id: "4",
+    name: "Panasonic Microwave",
+    description: "Compact microwave oven",
+    price: 25000,
+    category: "Microwaves",
+    imageUrl: "",
+    stock: 20,
+  },
+  {
+    id: "5",
+    name: "Bosch Oven",
+    description: "Professional kitchen oven",
+    price: 120000,
+    category: "Ovens",
+    imageUrl: "",
+    stock: 3,
+  },
+  {
+    id: "6",
+    name: "Siemens Dishwasher",
+    description: "Automatic dishwasher",
+    price: 75000,
+    category: "Dishwashers",
+    imageUrl: "",
+    stock: 8,
+  },
+];
+
+const categories = ["Refrigerators", "Washing Machines", "Air Conditioners", "Microwaves", "Ovens", "Dishwashers"];
+
 export default function Home() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | undefined>();
-  const [page, setPage] = useState(1);
 
-  const { data: categoriesData } = useListCategories();
-  const { data: productsData, isLoading } = useListProducts({
-    search: search || undefined,
-    category: category && category !== "all" ? category : undefined,
-    page,
-    limit: 12,
-  }, {
-    query: {
-      queryKey: getListProductsQueryKey({
-        search: search || undefined,
-        category: category && category !== "all" ? category : undefined,
-        page,
-        limit: 12,
-      })
-    }
+  const filteredProducts = mockProducts.filter((p) => {
+    const matchesSearch = search === "" || p.name.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = !category || category === "all" || p.category === category;
+    return matchesSearch && matchesCategory;
   });
 
   const features = [
@@ -67,7 +112,7 @@ export default function Home() {
               <span className="text-primary text-xs font-semibold tracking-wide uppercase">Nouveautés 2026</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4" style={{fontFamily:'Outfit,sans-serif'}}>
-              L'électroménager{" "}
+              L&apos;électroménager{" "}
               <span className="text-primary">de qualité</span>{" "}
               à votre portée
             </h1>
@@ -83,11 +128,6 @@ export default function Home() {
                 Voir tous les produits
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Link href="/register">
-                <Button size="lg" variant="outline" className="text-base font-semibold rounded-full px-8 h-12 border-white/30 text-white hover:bg-white/10 hover:border-white/50 w-full sm:w-auto">
-                  Créer un compte
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -116,38 +156,36 @@ export default function Home() {
       </div>
 
       {/* Categories quick nav */}
-      {categoriesData && categoriesData.length > 0 && (
-        <div className="bg-background py-8">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+      <div className="bg-background py-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+            <button
+              onClick={() => setCategory("all")}
+              className={`shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                !category || category === "all"
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                  : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground bg-white"
+              }`}
+            >
+              Tout afficher
+            </button>
+            {categories.map((cat) => (
               <button
-                onClick={() => { setCategory("all"); setPage(1); }}
+                key={cat}
+                onClick={() => setCategory(cat)}
                 className={`shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                  !category || category === "all"
+                  category === cat
                     ? "bg-primary text-primary-foreground border-primary shadow-sm"
                     : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground bg-white"
                 }`}
               >
-                Tout afficher
+                <span>{categoryIcons[cat] || "📦"}</span>
+                {cat}
               </button>
-              {categoriesData.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => { setCategory(cat); setPage(1); }}
-                  className={`shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                    category === cat
-                      ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                      : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground bg-white"
-                  }`}
-                >
-                  <span>{categoryIcons[cat] || "📦"}</span>
-                  {cat}
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
-      )}
+      </div>
 
       {/* Products section */}
       <div id="products" className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
@@ -158,20 +196,20 @@ export default function Home() {
             <Input
               placeholder="Rechercher un produit..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              onChange={(e) => setSearch(e.target.value)}
               className="pl-10 h-11 bg-white border-border/80 rounded-xl"
             />
           </div>
           <Select
             value={category || "all"}
-            onValueChange={(val) => { setCategory(val); setPage(1); }}
+            onValueChange={(val) => setCategory(val)}
           >
             <SelectTrigger className="w-full sm:w-[200px] h-11 bg-white border-border/80 rounded-xl">
               <SelectValue placeholder="Toutes catégories" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Toutes les catégories</SelectItem>
-              {categoriesData?.map((cat) => (
+              {categories.map((cat) => (
                 <SelectItem key={cat} value={cat}>
                   {categoryIcons[cat] || "📦"} {cat}
                 </SelectItem>
@@ -180,28 +218,14 @@ export default function Home() {
           </Select>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="rounded-2xl bg-white border border-border overflow-hidden">
-                <Skeleton className="aspect-[4/3] w-full" />
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-4 w-2/3" />
-                  <Skeleton className="h-5 w-full" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-9 w-full mt-3" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : productsData?.products.length === 0 ? (
+        {filteredProducts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="h-24 w-24 rounded-full bg-muted/60 flex items-center justify-center mb-6">
-              <PackageX className="h-10 w-10 text-muted-foreground/40" />
+              <span className="text-4xl">📦</span>
             </div>
             <h3 className="text-xl font-bold mb-2">Aucun produit trouvé</h3>
             <p className="text-muted-foreground max-w-sm mb-6">
-              Aucun produit ne correspond à vos critères. Essayez d'autres filtres.
+              Aucun produit ne correspond à vos critères. Essayez d&apos;autres filtres.
             </p>
             <Button variant="outline" onClick={() => { setSearch(""); setCategory("all"); }}>
               Effacer les filtres
@@ -211,26 +235,18 @@ export default function Home() {
           <>
             <div className="flex items-center justify-between mb-5">
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">{productsData?.total}</span> produit{productsData?.total !== 1 ? "s" : ""} trouvé{productsData?.total !== 1 ? "s" : ""}
+                <span className="font-semibold text-foreground">{filteredProducts.length}</span> produit{filteredProducts.length !== 1 ? "s" : ""} trouvé{filteredProducts.length !== 1 ? "s" : ""}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {productsData?.products.map((product) => (
+              {filteredProducts.map((product) => (
                 <Link key={product.id} href={`/products/${product.id}`}>
                   <div className="group bg-white rounded-2xl border border-border overflow-hidden card-hover cursor-pointer h-full flex flex-col">
                     <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30">
-                          <span className="text-5xl mb-2">{categoryIcons[product.category || ""] || "📦"}</span>
-                        </div>
-                      )}
+                      <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30">
+                        <span className="text-5xl mb-2">{categoryIcons[product.category || ""] || "📦"}</span>
+                      </div>
                       {/* Category pill */}
                       <div className="absolute top-3 left-3">
                         <span className="bg-[#3a3d42]/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">
@@ -276,42 +292,6 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-
-            {productsData && productsData.totalPages > 1 && (
-              <div className="flex items-center justify-center gap-3 mt-12">
-                <Button
-                  variant="outline"
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="rounded-full px-6"
-                >
-                  Précédent
-                </Button>
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: productsData.totalPages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setPage(p)}
-                      className={`h-9 w-9 rounded-full text-sm font-medium transition-all ${
-                        p === page
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setPage(p => Math.min(productsData.totalPages, p + 1))}
-                  disabled={page === productsData.totalPages}
-                  className="rounded-full px-6"
-                >
-                  Suivant
-                </Button>
-              </div>
-            )}
           </>
         )}
       </div>
